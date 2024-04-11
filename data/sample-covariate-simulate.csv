@@ -1,0 +1,351 @@
+,MR,experience.variation,helpfulness,gender,age,education,altruism
+4,No,RichRich,0.6666667,Female,50,Bachelor's degree,0.5
+22,No,RichRich,0.6666667,Male,42,Master's degree,0.1
+7,Yes,RichRich,0.3333333,Female,28,Bachelor's degree,0.5
+21,Yes,RichRich,1,Male,31,Bachelor's degree,0.5
+10,No,RichRich,0.6666667,Male,50,Bachelor's degree,0.5
+25,No,RichPoor,0.6666667,Female,46,Master's degree,0.5
+1,Yes,RichPoor,2,Female,51,Bachelor's degree,NA
+9,Yes,RichPoor,0.6666667,Female,30,Master's degree,0.6
+16,No,RichRich,0.5,Female,28,Bachelor's degree,0.5
+27,Yes,RichRich,1,Male,40,Master's degree,0.715
+22.1,No,RichRich,0.6666667,Male,42,Master's degree,0.1
+2,Yes,RichPoor,0.6666667,Female,32,Bachelor's degree,0.5
+25.1,No,RichPoor,0.6666667,Female,46,Master's degree,0.5
+24,No,RichPoor,0.6666667,Female,25,,0.5
+16.1,No,RichRich,0.5,Female,28,Bachelor's degree,0.5
+10.1,No,RichRich,0.6666667,Male,50,Bachelor's degree,0.5
+5,No,RichRich,1,Male,38,Bachelor's degree,0.4
+26,No,RichPoor,0.2,Male,38,,0.5
+12,No,RichPoor,0.2222222,Male,44,Master's degree,0.35
+3,No,RichPoor,0.25,Female,44,Bachelor's degree,0.5
+15,No,RichPoor,0.1333333,Female,26,,0.35
+13,Yes,RichPoor,2,Male,44,Bachelor's degree,0.5
+15.1,No,RichPoor,0.1333333,Female,26,,0.35
+25.2,No,RichPoor,0.6666667,Female,46,Master's degree,0.5
+27.1,Yes,RichRich,1,Male,40,Master's degree,0.715
+6,Yes,RichRich,0.3333333,Male,41,Master's degree,0.375
+27.2,Yes,RichRich,1,Male,40,Master's degree,0.715
+13.1,Yes,RichPoor,2,Male,44,Bachelor's degree,0.5
+21.1,Yes,RichRich,1,Male,31,Bachelor's degree,0.5
+20,No,RichPoor,0.5,Female,25,,0.5
+5.1,No,RichRich,1,Male,38,Bachelor's degree,0.4
+10.2,No,RichRich,0.6666667,Male,50,Bachelor's degree,0.5
+19,No,RichPoor,0.6666667,Male,42,,0.68
+4.1,No,RichRich,0.6666667,Female,50,Bachelor's degree,0.5
+27.3,Yes,RichRich,1,Male,40,Master's degree,0.715
+3.1,No,RichPoor,0.25,Female,44,Bachelor's degree,0.5
+18,No,RichRich,0.2,Male,48,Master's degree,0.3
+6.1,Yes,RichRich,0.3333333,Male,41,Master's degree,0.375
+12.1,No,RichPoor,0.2222222,Male,44,Master's degree,0.35
+4.2,No,RichRich,0.6666667,Female,50,Bachelor's degree,0.5
+30,No,RichRich,0.6666667,Male,29,Master's degree,0.475
+12.2,No,RichPoor,0.2222222,Male,44,Master's degree,0.35
+20.1,No,RichPoor,0.5,Female,25,,0.5
+10.3,No,RichRich,0.6666667,Male,50,Bachelor's degree,0.5
+18.1,No,RichRich,0.2,Male,48,Master's degree,0.3
+28,No,RichPoor,1,Male,28,,0.5
+22.2,No,RichRich,0.6666667,Male,42,Master's degree,0.1
+18.2,No,RichRich,0.2,Male,48,Master's degree,0.3
+12.3,No,RichPoor,0.2222222,Male,44,Master's degree,0.35
+21.2,Yes,RichRich,1,Male,31,Bachelor's degree,0.5
+15.2,No,RichPoor,0.1333333,Female,26,,0.35
+14,No,RichPoor,0.1428571,Male,30,Master's degree,0.375
+3.2,No,RichPoor,0.25,Female,44,Bachelor's degree,0.5
+30.1,No,RichRich,0.6666667,Male,29,Master's degree,0.475
+3.3,No,RichPoor,0.25,Female,44,Bachelor's degree,0.5
+23,Yes,RichRich,0.2,Male,39,Master's degree,0.5
+3.4,No,RichPoor,0.25,Female,44,Bachelor's degree,0.5
+10.4,No,RichRich,0.6666667,Male,50,Bachelor's degree,0.5
+9.1,Yes,RichPoor,0.6666667,Female,30,Master's degree,0.6
+22.3,No,RichRich,0.6666667,Male,42,Master's degree,0.1
+16.2,No,RichRich,0.5,Female,28,Bachelor's degree,0.5
+29,No,RichPoor,1,Female,35,Master's degree,0.5
+4.3,No,RichRich,0.6666667,Female,50,Bachelor's degree,0.5
+2.1,Yes,RichPoor,0.6666667,Female,32,Bachelor's degree,0.5
+7.1,Yes,RichRich,0.3333333,Female,28,Bachelor's degree,0.5
+11,Yes,RichPoor,0.5,Male,41,Bachelor's degree,0.5
+15.3,No,RichPoor,0.1333333,Female,26,,0.35
+1.1,Yes,RichPoor,2,Female,51,Bachelor's degree,NA
+6.2,Yes,RichRich,0.3333333,Male,41,Master's degree,0.375
+16.3,No,RichRich,0.5,Female,28,Bachelor's degree,0.5
+27.4,Yes,RichRich,1,Male,40,Master's degree,0.715
+8,No,RichPoor,0.5,Female,25,Bachelor's degree,0.275
+1.2,Yes,RichPoor,2,Female,51,Bachelor's degree,NA
+3.5,No,RichPoor,0.25,Female,44,Bachelor's degree,0.5
+25.3,No,RichPoor,0.6666667,Female,46,Master's degree,0.5
+2.2,Yes,RichPoor,0.6666667,Female,32,Bachelor's degree,0.5
+28.1,No,RichPoor,1,Male,28,,0.5
+18.3,No,RichRich,0.2,Male,48,Master's degree,0.3
+1.3,Yes,RichPoor,2,Female,51,Bachelor's degree,NA
+18.4,No,RichRich,0.2,Male,48,Master's degree,0.3
+26.1,No,RichPoor,0.2,Male,38,,0.5
+6.3,Yes,RichRich,0.3333333,Male,41,Master's degree,0.375
+11.1,Yes,RichPoor,0.5,Male,41,Bachelor's degree,0.5
+20.2,No,RichPoor,0.5,Female,25,,0.5
+13.2,Yes,RichPoor,2,Male,44,Bachelor's degree,0.5
+20.3,No,RichPoor,0.5,Female,25,,0.5
+14.1,No,RichPoor,0.1428571,Male,30,Master's degree,0.375
+28.2,No,RichPoor,1,Male,28,,0.5
+6.4,Yes,RichRich,0.3333333,Male,41,Master's degree,0.375
+3.6,No,RichPoor,0.25,Female,44,Bachelor's degree,0.5
+2.3,Yes,RichPoor,0.6666667,Female,32,Bachelor's degree,0.5
+3.7,No,RichPoor,0.25,Female,44,Bachelor's degree,0.5
+24.1,No,RichPoor,0.6666667,Female,25,,0.5
+28.3,No,RichPoor,1,Male,28,,0.5
+15.4,No,RichPoor,0.1333333,Female,26,,0.35
+13.3,Yes,RichPoor,2,Male,44,Bachelor's degree,0.5
+5.2,No,RichRich,1,Male,38,Bachelor's degree,0.4
+22.4,No,RichRich,0.6666667,Male,42,Master's degree,0.1
+3.8,No,RichPoor,0.25,Female,44,Bachelor's degree,0.5
+23.1,Yes,RichRich,0.2,Male,39,Master's degree,0.5
+15.5,No,RichPoor,0.1333333,Female,26,,0.35
+9.2,Yes,RichPoor,0.6666667,Female,30,Master's degree,0.6
+17,No,RichRich,0.2857143,Male,41,Master's degree,0.435
+19.1,No,RichPoor,0.6666667,Male,42,,0.68
+18.5,No,RichRich,0.2,Male,48,Master's degree,0.3
+15.6,No,RichPoor,0.1333333,Female,26,,0.35
+12.4,No,RichPoor,0.2222222,Male,44,Master's degree,0.35
+20.4,No,RichPoor,0.5,Female,25,,0.5
+1.4,Yes,RichPoor,2,Female,51,Bachelor's degree,NA
+29.1,No,RichPoor,1,Female,35,Master's degree,0.5
+20.5,No,RichPoor,0.5,Female,25,,0.5
+27.5,Yes,RichRich,1,Male,40,Master's degree,0.715
+26.2,No,RichPoor,0.2,Male,38,,0.5
+28.4,No,RichPoor,1,Male,28,,0.5
+2.4,Yes,RichPoor,0.6666667,Female,32,Bachelor's degree,0.5
+26.3,No,RichPoor,0.2,Male,38,,0.5
+1.5,Yes,RichPoor,2,Female,51,Bachelor's degree,NA
+12.5,No,RichPoor,0.2222222,Male,44,Master's degree,0.35
+22.5,No,RichRich,0.6666667,Male,42,Master's degree,0.1
+10.5,No,RichRich,0.6666667,Male,50,Bachelor's degree,0.5
+13.4,Yes,RichPoor,2,Male,44,Bachelor's degree,0.5
+10.6,No,RichRich,0.6666667,Male,50,Bachelor's degree,0.5
+8.1,No,RichPoor,0.5,Female,25,Bachelor's degree,0.275
+16.4,No,RichRich,0.5,Female,28,Bachelor's degree,0.5
+1.6,Yes,RichPoor,2,Female,51,Bachelor's degree,NA
+11.2,Yes,RichPoor,0.5,Male,41,Bachelor's degree,0.5
+15.7,No,RichPoor,0.1333333,Female,26,,0.35
+7.2,Yes,RichRich,0.3333333,Female,28,Bachelor's degree,0.5
+12.6,No,RichPoor,0.2222222,Male,44,Master's degree,0.35
+11.3,Yes,RichPoor,0.5,Male,41,Bachelor's degree,0.5
+15.8,No,RichPoor,0.1333333,Female,26,,0.35
+25.4,No,RichPoor,0.6666667,Female,46,Master's degree,0.5
+5.3,No,RichRich,1,Male,38,Bachelor's degree,0.4
+15.9,No,RichPoor,0.1333333,Female,26,,0.35
+6.5,Yes,RichRich,0.3333333,Male,41,Master's degree,0.375
+18.6,No,RichRich,0.2,Male,48,Master's degree,0.3
+23.2,Yes,RichRich,0.2,Male,39,Master's degree,0.5
+10.7,No,RichRich,0.6666667,Male,50,Bachelor's degree,0.5
+3.9,No,RichPoor,0.25,Female,44,Bachelor's degree,0.5
+28.5,No,RichPoor,1,Male,28,,0.5
+21.3,Yes,RichRich,1,Male,31,Bachelor's degree,0.5
+28.6,No,RichPoor,1,Male,28,,0.5
+11.4,Yes,RichPoor,0.5,Male,41,Bachelor's degree,0.5
+29.2,No,RichPoor,1,Female,35,Master's degree,0.5
+9.3,Yes,RichPoor,0.6666667,Female,30,Master's degree,0.6
+18.7,No,RichRich,0.2,Male,48,Master's degree,0.3
+29.3,No,RichPoor,1,Female,35,Master's degree,0.5
+24.2,No,RichPoor,0.6666667,Female,25,,0.5
+25.5,No,RichPoor,0.6666667,Female,46,Master's degree,0.5
+5.4,No,RichRich,1,Male,38,Bachelor's degree,0.4
+17.1,No,RichRich,0.2857143,Male,41,Master's degree,0.435
+1.7,Yes,RichPoor,2,Female,51,Bachelor's degree,NA
+28.7,No,RichPoor,1,Male,28,,0.5
+26.4,No,RichPoor,0.2,Male,38,,0.5
+19.2,No,RichPoor,0.6666667,Male,42,,0.68
+24.3,No,RichPoor,0.6666667,Female,25,,0.5
+13.5,Yes,RichPoor,2,Male,44,Bachelor's degree,0.5
+20.6,No,RichPoor,0.5,Female,25,,0.5
+21.4,Yes,RichRich,1,Male,31,Bachelor's degree,0.5
+22.6,No,RichRich,0.6666667,Male,42,Master's degree,0.1
+22.7,No,RichRich,0.6666667,Male,42,Master's degree,0.1
+21.5,Yes,RichRich,1,Male,31,Bachelor's degree,0.5
+7.3,Yes,RichRich,0.3333333,Female,28,Bachelor's degree,0.5
+30.2,No,RichRich,0.6666667,Male,29,Master's degree,0.475
+16.5,No,RichRich,0.5,Female,28,Bachelor's degree,0.5
+1.8,Yes,RichPoor,2,Female,51,Bachelor's degree,NA
+3.1,No,RichPoor,0.25,Female,44,Bachelor's degree,0.5
+4.4,No,RichRich,0.6666667,Female,50,Bachelor's degree,0.5
+21.6,Yes,RichRich,1,Male,31,Bachelor's degree,0.5
+29.4,No,RichPoor,1,Female,35,Master's degree,0.5
+3.11,No,RichPoor,0.25,Female,44,Bachelor's degree,0.5
+5.5,No,RichRich,1,Male,38,Bachelor's degree,0.4
+13.6,Yes,RichPoor,2,Male,44,Bachelor's degree,0.5
+9.4,Yes,RichPoor,0.6666667,Female,30,Master's degree,0.6
+14.2,No,RichPoor,0.1428571,Male,30,Master's degree,0.375
+25.6,No,RichPoor,0.6666667,Female,46,Master's degree,0.5
+16.6,No,RichRich,0.5,Female,28,Bachelor's degree,0.5
+21.7,Yes,RichRich,1,Male,31,Bachelor's degree,0.5
+11.5,Yes,RichPoor,0.5,Male,41,Bachelor's degree,0.5
+15.1,No,RichPoor,0.1333333,Female,26,,0.35
+21.8,Yes,RichRich,1,Male,31,Bachelor's degree,0.5
+13.7,Yes,RichPoor,2,Male,44,Bachelor's degree,0.5
+20.7,No,RichPoor,0.5,Female,25,,0.5
+15.11,No,RichPoor,0.1333333,Female,26,,0.35
+4.5,No,RichRich,0.6666667,Female,50,Bachelor's degree,0.5
+28.8,No,RichPoor,1,Male,28,,0.5
+19.3,No,RichPoor,0.6666667,Male,42,,0.68
+22.8,No,RichRich,0.6666667,Male,42,Master's degree,0.1
+19.4,No,RichPoor,0.6666667,Male,42,,0.68
+3.12,No,RichPoor,0.25,Female,44,Bachelor's degree,0.5
+17.2,No,RichRich,0.2857143,Male,41,Master's degree,0.435
+8.2,No,RichPoor,0.5,Female,25,Bachelor's degree,0.275
+8.3,No,RichPoor,0.5,Female,25,Bachelor's degree,0.275
+17.3,No,RichRich,0.2857143,Male,41,Master's degree,0.435
+29.5,No,RichPoor,1,Female,35,Master's degree,0.5
+26.5,No,RichPoor,0.2,Male,38,,0.5
+1.9,Yes,RichPoor,2,Female,51,Bachelor's degree,NA
+28.9,No,RichPoor,1,Male,28,,0.5
+14.3,No,RichPoor,0.1428571,Male,30,Master's degree,0.375
+5.6,No,RichRich,1,Male,38,Bachelor's degree,0.4
+29.6,No,RichPoor,1,Female,35,Master's degree,0.5
+23.3,Yes,RichRich,0.2,Male,39,Master's degree,0.5
+26.6,No,RichPoor,0.2,Male,38,,0.5
+28.1,No,RichPoor,1,Male,28,,0.5
+10.8,No,RichRich,0.6666667,Male,50,Bachelor's degree,0.5
+1.1,Yes,RichPoor,2,Female,51,Bachelor's degree,NA
+9.5,Yes,RichPoor,0.6666667,Female,30,Master's degree,0.6
+23.4,Yes,RichRich,0.2,Male,39,Master's degree,0.5
+7.4,Yes,RichRich,0.3333333,Female,28,Bachelor's degree,0.5
+5.7,No,RichRich,1,Male,38,Bachelor's degree,0.4
+20.8,No,RichPoor,0.5,Female,25,,0.5
+21.9,Yes,RichRich,1,Male,31,Bachelor's degree,0.5
+27.6,Yes,RichRich,1,Male,40,Master's degree,0.715
+25.7,No,RichPoor,0.6666667,Female,46,Master's degree,0.5
+13.8,Yes,RichPoor,2,Male,44,Bachelor's degree,0.5
+21.1,Yes,RichRich,1,Male,31,Bachelor's degree,0.5
+5.8,No,RichRich,1,Male,38,Bachelor's degree,0.4
+30.3,No,RichRich,0.6666667,Male,29,Master's degree,0.475
+11.6,Yes,RichPoor,0.5,Male,41,Bachelor's degree,0.5
+18.8,No,RichRich,0.2,Male,48,Master's degree,0.3
+17.4,No,RichRich,0.2857143,Male,41,Master's degree,0.435
+1.11,Yes,RichPoor,2,Female,51,Bachelor's degree,NA
+9.6,Yes,RichPoor,0.6666667,Female,30,Master's degree,0.6
+15.12,No,RichPoor,0.1333333,Female,26,,0.35
+11.7,Yes,RichPoor,0.5,Male,41,Bachelor's degree,0.5
+21.11,Yes,RichRich,1,Male,31,Bachelor's degree,0.5
+9.7,Yes,RichPoor,0.6666667,Female,30,Master's degree,0.6
+12.7,No,RichPoor,0.2222222,Male,44,Master's degree,0.35
+19.5,No,RichPoor,0.6666667,Male,42,,0.68
+7.5,Yes,RichRich,0.3333333,Female,28,Bachelor's degree,0.5
+10.9,No,RichRich,0.6666667,Male,50,Bachelor's degree,0.5
+1.12,Yes,RichPoor,2,Female,51,Bachelor's degree,NA
+7.6,Yes,RichRich,0.3333333,Female,28,Bachelor's degree,0.5
+21.12,Yes,RichRich,1,Male,31,Bachelor's degree,0.5
+18.9,No,RichRich,0.2,Male,48,Master's degree,0.3
+22.9,No,RichRich,0.6666667,Male,42,Master's degree,0.1
+9.8,Yes,RichPoor,0.6666667,Female,30,Master's degree,0.6
+16.7,No,RichRich,0.5,Female,28,Bachelor's degree,0.5
+22.1,No,RichRich,0.6666667,Male,42,Master's degree,0.1
+30.4,No,RichRich,0.6666667,Male,29,Master's degree,0.475
+8.4,No,RichPoor,0.5,Female,25,Bachelor's degree,0.275
+17.5,No,RichRich,0.2857143,Male,41,Master's degree,0.435
+6.6,Yes,RichRich,0.3333333,Male,41,Master's degree,0.375
+14.4,No,RichPoor,0.1428571,Male,30,Master's degree,0.375
+1.13,Yes,RichPoor,2,Female,51,Bachelor's degree,NA
+10.1,No,RichRich,0.6666667,Male,50,Bachelor's degree,0.5
+9.9,Yes,RichPoor,0.6666667,Female,30,Master's degree,0.6
+5.9,No,RichRich,1,Male,38,Bachelor's degree,0.4
+1.14,Yes,RichPoor,2,Female,51,Bachelor's degree,NA
+10.11,No,RichRich,0.6666667,Male,50,Bachelor's degree,0.5
+28.11,No,RichPoor,1,Male,28,,0.5
+29.7,No,RichPoor,1,Female,35,Master's degree,0.5
+23.5,Yes,RichRich,0.2,Male,39,Master's degree,0.5
+30.5,No,RichRich,0.6666667,Male,29,Master's degree,0.475
+10.12,No,RichRich,0.6666667,Male,50,Bachelor's degree,0.5
+15.13,No,RichPoor,0.1333333,Female,26,,0.35
+17.6,No,RichRich,0.2857143,Male,41,Master's degree,0.435
+20.9,No,RichPoor,0.5,Female,25,,0.5
+10.13,No,RichRich,0.6666667,Male,50,Bachelor's degree,0.5
+3.13,No,RichPoor,0.25,Female,44,Bachelor's degree,0.5
+23.6,Yes,RichRich,0.2,Male,39,Master's degree,0.5
+10.14,No,RichRich,0.6666667,Male,50,Bachelor's degree,0.5
+20.1,No,RichPoor,0.5,Female,25,,0.5
+15.14,No,RichPoor,0.1333333,Female,26,,0.35
+25.8,No,RichPoor,0.6666667,Female,46,Master's degree,0.5
+11.8,Yes,RichPoor,0.5,Male,41,Bachelor's degree,0.5
+28.12,No,RichPoor,1,Male,28,,0.5
+14.5,No,RichPoor,0.1428571,Male,30,Master's degree,0.375
+30.6,No,RichRich,0.6666667,Male,29,Master's degree,0.475
+7.7,Yes,RichRich,0.3333333,Female,28,Bachelor's degree,0.5
+6.7,Yes,RichRich,0.3333333,Male,41,Master's degree,0.375
+14.6,No,RichPoor,0.1428571,Male,30,Master's degree,0.375
+19.6,No,RichPoor,0.6666667,Male,42,,0.68
+26.7,No,RichPoor,0.2,Male,38,,0.5
+25.9,No,RichPoor,0.6666667,Female,46,Master's degree,0.5
+14.7,No,RichPoor,0.1428571,Male,30,Master's degree,0.375
+23.7,Yes,RichRich,0.2,Male,39,Master's degree,0.5
+18.1,No,RichRich,0.2,Male,48,Master's degree,0.3
+2.5,Yes,RichPoor,0.6666667,Female,32,Bachelor's degree,0.5
+14.8,No,RichPoor,0.1428571,Male,30,Master's degree,0.375
+6.8,Yes,RichRich,0.3333333,Male,41,Master's degree,0.375
+15.15,No,RichPoor,0.1333333,Female,26,,0.35
+5.1,No,RichRich,1,Male,38,Bachelor's degree,0.4
+21.13,Yes,RichRich,1,Male,31,Bachelor's degree,0.5
+22.11,No,RichRich,0.6666667,Male,42,Master's degree,0.1
+19.7,No,RichPoor,0.6666667,Male,42,,0.68
+24.4,No,RichPoor,0.6666667,Female,25,,0.5
+10.15,No,RichRich,0.6666667,Male,50,Bachelor's degree,0.5
+27.7,Yes,RichRich,1,Male,40,Master's degree,0.715
+7.8,Yes,RichRich,0.3333333,Female,28,Bachelor's degree,0.5
+21.14,Yes,RichRich,1,Male,31,Bachelor's degree,0.5
+14.9,No,RichPoor,0.1428571,Male,30,Master's degree,0.375
+26.8,No,RichPoor,0.2,Male,38,,0.5
+25.1,No,RichPoor,0.6666667,Female,46,Master's degree,0.5
+9.1,Yes,RichPoor,0.6666667,Female,30,Master's degree,0.6
+7.9,Yes,RichRich,0.3333333,Female,28,Bachelor's degree,0.5
+13.9,Yes,RichPoor,2,Male,44,Bachelor's degree,0.5
+26.9,No,RichPoor,0.2,Male,38,,0.5
+19.8,No,RichPoor,0.6666667,Male,42,,0.68
+2.6,Yes,RichPoor,0.6666667,Female,32,Bachelor's degree,0.5
+22.12,No,RichRich,0.6666667,Male,42,Master's degree,0.1
+25.11,No,RichPoor,0.6666667,Female,46,Master's degree,0.5
+17.7,No,RichRich,0.2857143,Male,41,Master's degree,0.435
+28.13,No,RichPoor,1,Male,28,,0.5
+5.11,No,RichRich,1,Male,38,Bachelor's degree,0.4
+20.11,No,RichPoor,0.5,Female,25,,0.5
+6.9,Yes,RichRich,0.3333333,Male,41,Master's degree,0.375
+7.1,Yes,RichRich,0.3333333,Female,28,Bachelor's degree,0.5
+28.14,No,RichPoor,1,Male,28,,0.5
+10.16,No,RichRich,0.6666667,Male,50,Bachelor's degree,0.5
+22.13,No,RichRich,0.6666667,Male,42,Master's degree,0.1
+5.12,No,RichRich,1,Male,38,Bachelor's degree,0.4
+4.6,No,RichRich,0.6666667,Female,50,Bachelor's degree,0.5
+23.8,Yes,RichRich,0.2,Male,39,Master's degree,0.5
+20.12,No,RichPoor,0.5,Female,25,,0.5
+1.15,Yes,RichPoor,2,Female,51,Bachelor's degree,NA
+16.8,No,RichRich,0.5,Female,28,Bachelor's degree,0.5
+26.1,No,RichPoor,0.2,Male,38,,0.5
+20.13,No,RichPoor,0.5,Female,25,,0.5
+15.16,No,RichPoor,0.1333333,Female,26,,0.35
+14.1,No,RichPoor,0.1428571,Male,30,Master's degree,0.375
+10.17,No,RichRich,0.6666667,Male,50,Bachelor's degree,0.5
+12.8,No,RichPoor,0.2222222,Male,44,Master's degree,0.35
+3.14,No,RichPoor,0.25,Female,44,Bachelor's degree,0.5
+9.11,Yes,RichPoor,0.6666667,Female,30,Master's degree,0.6
+18.11,No,RichRich,0.2,Male,48,Master's degree,0.3
+13.1,Yes,RichPoor,2,Male,44,Bachelor's degree,0.5
+7.11,Yes,RichRich,0.3333333,Female,28,Bachelor's degree,0.5
+30.7,No,RichRich,0.6666667,Male,29,Master's degree,0.475
+12.9,No,RichPoor,0.2222222,Male,44,Master's degree,0.35
+21.15,Yes,RichRich,1,Male,31,Bachelor's degree,0.5
+18.12,No,RichRich,0.2,Male,48,Master's degree,0.3
+20.14,No,RichPoor,0.5,Female,25,,0.5
+5.13,No,RichRich,1,Male,38,Bachelor's degree,0.4
+25.12,No,RichPoor,0.6666667,Female,46,Master's degree,0.5
+16.9,No,RichRich,0.5,Female,28,Bachelor's degree,0.5
+26.11,No,RichPoor,0.2,Male,38,,0.5
+11.9,Yes,RichPoor,0.5,Male,41,Bachelor's degree,0.5
+29.8,No,RichPoor,1,Female,35,Master's degree,0.5
+6.1,Yes,RichRich,0.3333333,Male,41,Master's degree,0.375
+10.18,No,RichRich,0.6666667,Male,50,Bachelor's degree,0.5
+12.1,No,RichPoor,0.2222222,Male,44,Master's degree,0.35
+25.13,No,RichPoor,0.6666667,Female,46,Master's degree,0.5
+15.17,No,RichPoor,0.1333333,Female,26,,0.35
+30.8,No,RichRich,0.6666667,Male,29,Master's degree,0.475
+4.7,No,RichRich,0.6666667,Female,50,Bachelor's degree,0.5
+13.11,Yes,RichPoor,2,Male,44,Bachelor's degree,0.5
+3.15,No,RichPoor,0.25,Female,44,Bachelor's degree,0.5
+19.9,No,RichPoor,0.6666667,Male,42,,0.68
+10.19,No,RichRich,0.6666667,Male,50,Bachelor's degree,0.5
