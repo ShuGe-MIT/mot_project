@@ -7,8 +7,6 @@ import pickle as pkl
 import time
 import argparse
 import torch
-from mpmath import mp
-mp.dps = 10000
 
 
 def parse_args():
