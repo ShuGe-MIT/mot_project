@@ -7,24 +7,19 @@ import pickle as pkl
 import time
 import argparse
 import torch
-from mpmath import mp
-mp.dps = 10000
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Run MOT Solver')
     parser.add_argument('--target_epsilon', type=float, default=1e-3, help='target epsilon')
     parser.add_argument('--start_epsilon', type=float, default=1, help='start epsilon')
-    # parser.add_argument('--epsilon_scale', type=str, default='fixed', help='epsilon scaling method')
     parser.add_argument('--epsilon_scale_num', type=float, default=0.99, help='epsilon_scale_num')
     parser.add_argument('--epsilon_scale_gap', type=float, default=100, help='epsilon_scale_gap')
-    # parser.add_argument('--epsilon_decay_factor', type=float, default=2, help='epsilon_decay_factor')
     parser.add_argument('--cost_type', type=str, default='square', help='type of cost')
     parser.add_argument('--verbose', type=int, default=2, help='verbose')
     parser.add_argument('--cost_scale', type=float, default=1, help='cost_scale')
     parser.add_argument('--max_iter', type=int, default=5000, help='max iter')
     parser.add_argument('--iter_gap', type=int, default=100, help='iter_gap')
-    parser.add_argument('--out_dir', type=str, default='test_out', help='output directory')
     parser.add_argument('--solver', type=str, default='sinkhorn', help='MOT solver')
     parser.add_argument('--data_file', type=str, default='weight_loss', help='data file')
     # Add more arguments as needed
@@ -32,6 +27,7 @@ def parse_args():
 
 def rotate(l, n):
     return l[n:] + l[:n]
+
 def tensor_sum(list_of_lists):
     # return a tensor of size len(list_of_lists[0]) x ... x len(list_of_lists[-1]) where the value at index (i_1, ..., i_n) is the sum of the values at the same index in the lists
     shape = tuple(len(lst) for lst in list_of_lists)
@@ -40,21 +36,17 @@ def tensor_sum(list_of_lists):
     idxes = list(range(len(shape)))
     for idx, l in enumerate(list_of_lists):
         tensor += torch.from_numpy(l).reshape(*([1]*idx + [-1] + [1]*(M - idx - 1))).expand(*shape).numpy()
-        # tensor += np.transpose(np.tensordot(l, np.ones(shape[idx+1:] + shape[:idx]), axes=0), axes = rotate(idxes, -idx))
     return tensor
 
 def binary_search(a, b, f, delta = 1e-2):
     while True:
         c = (a+b)/2
-        
         if f(c+delta) < f(c):
             a = c
         else:
             b = c
-        
         if abs(a-b) <= delta:
             break
-    
     return (a+b)/2
 
 def create_normed_cost_tensor(list_list_of_lists):
@@ -554,9 +546,6 @@ def solve_aam(costs, target_mu, epsilon = 1e-2, verbose = 0, print_itr = 0, max_
     def g(theta, p):
         U_tmp = B(theta)
         return np.concatenate([marginal_k(U_tmp, k) / U_tmp.sum().sum() - get_marginal_k(p, k) for k in range(m)])
-    # def g_k(k, theta):
-    #     U_tmp = B(theta)
-    #     return marginal_k(U_tmp, k) / U_tmp.sum().sum() - get_marginal_k(p, k)
     def g_l2_norm(theta, p):
         U_tmp = B(theta)
         return np.sum([np.square(marginal_k(U_tmp, k) / U_tmp.sum().sum() - get_marginal_k(p, k)).sum() for k in range(m)])
@@ -597,25 +586,12 @@ def solve_aam(costs, target_mu, epsilon = 1e-2, verbose = 0, print_itr = 0, max_
     theta = np.zeros(len(p))
     x0 = 0.1
 
-    # TODO: what's the initialization for X?
     X = np.ones(costs.shape)
 
     obj_list = []
     condition_list = []
     beta_list = []
     itr = 0
-    if verbose >= 2 and itr > print_itr: print("costs/gamma max", np.abs(costs).max().max()/gamma, np.exp(-np.abs(costs).max().max()/gamma), "costs/gamma min", np.abs(costs).min().min()/gamma, np.exp(-np.abs(costs).min().min()/gamma))
-    if verbose >= 2 and itr > print_itr: print("costs max", costs.max().max(), "costs min", costs.min().min(), "gamma", gamma)
-    # for itr in range(100):
-    if verbose >= 2 and itr > print_itr: print("condition:", 2 * l1_error(X, p_tilde) + F(X) + psi(eta, p), epsilon / 2, 2 * l1_error(X, p_tilde), F(X), psi(eta, p))
-    
-    # # decay epsilon
-    # def get_reg(n):  # exponential decreasing
-    #         return (epsilon0 - epsilon_final) * np.exp(-n) + epsilon_final
-
-    # epsilon_i = epsilon0 if warm_start else epsilon
-    
-    print("start while loop", "Current Time:", datetime.datetime.now())
     
     while 2 * l1_error(X, p_tilde) + F(X) + psi(eta, p) > epsilon / 2:
         itr += 1
@@ -628,9 +604,6 @@ def solve_aam(costs, target_mu, epsilon = 1e-2, verbose = 0, print_itr = 0, max_
             return psi(eta + beta * (zeta - eta), p_tilde)
         # find the minimum of f(beta)
         # add constraints that beta is in [0, 1]
-        
-        print("start beta optimization", "Current Time:", datetime.datetime.now())
-        
         if method == "minimize":
             # method 1
             const = ({'type': 'ineq', 'fun': lambda beta: beta}, {'type': 'ineq', 'fun': lambda beta: 1 - beta})
@@ -642,30 +615,17 @@ def solve_aam(costs, target_mu, epsilon = 1e-2, verbose = 0, print_itr = 0, max_
             # method 3
             beta = optimize.minimize_scalar(f, bounds=(0, 1), method = 'bounded').x
         
-        print("end beta optimization", "Current Time:", datetime.datetime.now())
         
         beta_list.append(beta)
         theta = eta + beta * (zeta - eta)
         if verbose >= 2 and itr > print_itr: print("beta, eta, zeta", beta, eta, zeta)
 
-        print("start picking margin", "Current Time:", datetime.datetime.now())
         # pick margin
         i = np.argmax([g_l2_norm_k(k, theta, p_tilde) for k in range(m)])
         
-        print("end picking margin", "Current Time:", datetime.datetime.now())
-        
-        
-        print("start updating eta", "Current Time:", datetime.datetime.now())
-        
         eta = update_eta(theta, i)
         
-        print("end updating eta", "Current Time:", datetime.datetime.now())
-        
-        # if verbose >= 2 and itr > print_itr: print("theta, eta", theta, eta)
-        # if verbose >= 2 and itr > print_itr: print("marginal", get_marginal_k(theta, i), get_marginal_k(eta, i))
-        # if verbose >= 2 and itr > print_itr: print("psi(theta), psi(eta)", psi(theta, p_tilde), psi(eta, p_tilde))
         tmp = (psi(theta, p_tilde) - psi(eta, p_tilde)) / g_l2_norm(theta, p_tilde)
-        # TODO: hacky way to avoid unsolvable a
         if tmp < 0: 
             if verbose >= 2 and itr > print_itr: print("early stopping " + "!" * 80, tmp)
             a = 0
@@ -675,55 +635,14 @@ def solve_aam(costs, target_mu, epsilon = 1e-2, verbose = 0, print_itr = 0, max_
         A += a
         zeta = zeta - a * g(theta, p_tilde)
         
-        # if verbose >= 2 and itr > print_itr: print("a * g(theta)", a * g(theta, p_tilde))
-        if verbose >= 2 and itr > print_itr: 
-            print("theta", theta)
-            # sns.heatmap(theta.reshape(1, -1), annot = True, fmt = ".4")
-            # plt.show()
-        
-        print("start updating X", "Current Time:", datetime.datetime.now())
-        
         X = (a * primal(theta) + A_t * X) / A
-        
-        print("end updating X", "Current Time:", datetime.datetime.now())
-        
-        # X = projection(X, p) # TODO: project X to the probability simplex (not in the original code)
-        
-        if verbose >= 2 and itr > print_itr: print("A_t", A_t, "A", A, "a", a)
-        if verbose >= 2 and itr > print_itr: print("X min", X.min().min(), "X max", X.max().max())
-        if verbose >= 2 and itr > print_itr: print("primal min", primal(theta).min().min(), "primal max", primal(theta).max().max())
-        
-        print("start computing objective", "Current Time:", datetime.datetime.now())
         
         obj = (costs * X).sum().sum()
         
-        print("end computing objective", "Current Time:", datetime.datetime.now())
-        
         obj_list.append(obj)
-        # if verbose >= 2 and itr > print_itr: print("X_norm: ", X.max().max())
-        # if verbose >= 2 and itr > print_itr: print("eta: ", np.square(eta).sum())
-        if verbose >= 2 and itr > print_itr: print("****", "itr", itr, "obj: ", obj, "condition:", 2 * l1_error(X, p_tilde) + F(X) + psi(eta, p), epsilon / 2)
-        if verbose >= 2 and itr > print_itr: print("=" * 30)
         condition_list.append(2 * l1_error(X, p_tilde) + F(X) + psi(eta, p))
-        # if verbose >= 2 and itr > print_itr:
-        #     plt.figure(figsize = (15, 5))
-        #     sns.heatmap(X.sum(axis=0).sum(axis=0), annot = True, fmt = ".4")
-        #     plt.show()
     weight = projection(X, p)
     obj = (costs * weight).sum().sum()
-    plt.plot(obj_list)
-    plt.title("Objective over iterations")
-    plt.show()
-    
-    plt.plot(beta_list)
-    plt.title("beta over iterations at initialization " + str(x0))
-    plt.show()
-    
-    plt.plot(condition_list)
-    plt.title("Threshold over iterations with precision" + str(epsilon / 2))
-    # plt.ylim(0, 5 * epsilon)
-    plt.yscale('log')
-    plt.show()
     return obj, -float('inf'), weight
 
 def get_res_single(tmp_list, solver = solve_sinkhorn, return_res = False, print_res = True, cost_type='square'):
