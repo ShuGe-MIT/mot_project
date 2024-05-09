@@ -2,4 +2,4 @@ data/*.pkl
 out/
 myScript.sh.*
 submit_script*.sh
-
+log/*
