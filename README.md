@@ -34,15 +34,14 @@ The script `MOT_models.py` can be executed from the command line with several op
 * `--solver`: Type of MOT solver used (default: sinkhorn, options: sinkhorn, rrsinkhorn, greenkhorn, aam, etc.).
 * `--data_file`: Path to the data file used for training (default: weight_loss).
 
-During training, the results are logged inside the `/log` folder.
-
-## Visualization
-Use `view_results.ipynb` to view any results from `/log`.
-
-## Example Command
 To run the training script with custom settings, use the following command:
 
 ```bash
 python MOT_models.py --start_epsilon=1 --target_epsilon=1e-3 --iter_gap=1 --epsilon_scale_num=0.99 --epsilon_scale_gap=5 --data_file=weight_loss --max_iter=5000 --cost_type=squared
 ```
 This command sets the training parameters according to the user's specific needs, such as cost type and epsilon values.
+
+During training, the results are logged inside the `/log` folder.
+
+## Visualization
+Use `view_results.ipynb` to view any results from `/log`.
