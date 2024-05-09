@@ -22,7 +22,6 @@ def parse_args():
     parser.add_argument('--cost_scale', type=float, default=1, help='cost_scale')
     parser.add_argument('--max_iter', type=int, default=5000, help='max iter')
     parser.add_argument('--iter_gap', type=int, default=100, help='iter_gap')
-    parser.add_argument('--out_dir', type=str, default='test_out', help='output directory')
     parser.add_argument('--solver', type=str, default='sinkhorn', help='MOT solver')
     parser.add_argument('--data_file', type=str, default='weight_loss', help='data file')
     # Add more arguments as needed
