@@ -14,15 +14,15 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Run MOT Solver')
     parser.add_argument('--target_epsilon', type=float, default=1e-3, help='target epsilon')
     parser.add_argument('--start_epsilon', type=float, default=1, help='start epsilon')
-    parser.add_argument('--epsilon_scale_num', type=float, default=0.99, help='epsilon_scale_num')
-    parser.add_argument('--epsilon_scale_gap', type=float, default=100, help='epsilon_scale_gap')
+    parser.add_argument('--epsilon_scale_num', type=float, default=0.99, help='epsilon scale factor')
+    parser.add_argument('--epsilon_scale_gap', type=float, default=100, help='iteraction gap between epsilon scaling')
     parser.add_argument('--cost_type', type=str, default='square', help='type of cost')
     parser.add_argument('--verbose', type=int, default=2, help='verbose')
-    parser.add_argument('--cost_scale', type=float, default=1, help='cost_scale')
+    parser.add_argument('--cost_scale', type=float, default=1, help='cost scale')
     parser.add_argument('--max_iter', type=int, default=5000, help='max iter')
-    parser.add_argument('--iter_gap', type=int, default=100, help='iter_gap')
+    parser.add_argument('--iter_gap', type=int, default=100, help='iteration gap for recording')
     parser.add_argument('--solver', type=str, default='sinkhorn', help='MOT solver')
-    parser.add_argument('--data_file', type=str, default='weight_loss', help='data file')
+    parser.add_argument('--data_file', type=str, default='weight_loss', help='data file name')
     # Add more arguments as needed
     return parser.parse_args()
 
@@ -124,19 +124,30 @@ def solve_lp(costs, target_mu):
     res = linprog(c, A_eq=A, b_eq=target_mu, bounds=[0, 1])
     return res.fun, res.x.reshape(shape)
 
-def solve_sinkhorn(costs, target_mu, epsilon=1e-2, target_epsilon=1e-4, verbose = 0, epsilon_scale_num = 0.99, epsilon_scale_gap = 100, cost_scale = 1, iter_gap = 100, max_iter = 5000, out_dir = 'test'):
-    """solve using Greenkhorn's algorithm
+def solve_multi_sinkhorn(costs, target_mu, epsilon=1e-2, target_epsilon=1e-4, verbose = 0, epsilon_scale_num = 0.99, epsilon_scale_gap = 100, cost_scale = 1, iter_gap = 100, max_iter = 5000, out_dir = 'test'):
+    """solve using Sinkhorn's algorithm
 
     Args:
-        costs (array)
-        target_mu (list): target probability
-        epsilon (float): precision. Defaults to 1e-2.
-        verbose (int, optional): print intermediate results if verbose >= 2. Defaults to 0.
-        cost_scale (int, optional): divide the cost matrix by cost_scale before calculating, scale back in the end. Defaults to 1.
-        iter_gap (int, optional): print results every `iter_gap` iterations. Defaults to 100.
+        costs (array): Cost matrix for the optimal transport problem.
+        target_mu (list): Target probability distributions.
+        epsilon (float): Starting epsilon for the Sinkhorn iterations. Defaults to 1e-2.
+        target_epsilon (float): Target end epsilon for the Sinkhorn iterations. Defaults to 1e-4.
+        verbose (int): Verbosity level. Print intermediate results if verbose >= 2. Defaults to 0.
+        epsilon_scale_num (float): Factor to scale epsilon after `epsilon_scale_gap` iterations. Defaults to 0.99.
+        epsilon_scale_gap (int): Number of iterations after which to scale epsilon. Defaults to 100.
+        cost_scale (int, optional): Scale factor for the cost matrix. Divide the cost matrix by `cost_scale` before calculating, then scale back at the end. Defaults to 1.
+        iter_gap (int, optional): Print results every `iter_gap` iterations if verbose >= 2. Defaults to 100.
+        max_iter (int, optional): Maximum number of iterations to run. Defaults to 5000.
+        out_dir (str, optional): Directory to save the log files. Defaults to 'test'.
 
     Returns:
-        _type_: _description_
+        tuple: A tuple containing the following elements:
+            - float: Final objective value.
+            - float: Lower bound of the objective.
+            - array: Weights of the optimal transport plan.
+
+    References:
+        Lin, Tianyi et al. (2022). “On the complexity of approximating multimarginal optimal transport”. In: The Journal of Machine Learning Research 23.1, pp. 2835–2877.
     """
     ########## initialization ###########
     
@@ -266,18 +277,29 @@ def solve_sinkhorn(costs, target_mu, epsilon=1e-2, target_epsilon=1e-4, verbose 
 
 
 def solve_rrsinkhorn(costs, target_mu, epsilon=1e-2, target_epsilon=1e-4, verbose = 0, epsilon_scale_num = 0.99, epsilon_scale_gap = 100, cost_scale = 1, iter_gap = 100, max_iter = 5000, out_dir = 'test'):
-    """solve using Greenkhorn's algorithm
+    """solve using Sinkhorn's algorithm in a round robin fashion
 
     Args:
-        costs (array)
-        target_mu (list): target probability
-        epsilon (float): precision. Defaults to 1e-2.
-        verbose (int, optional): print intermediate results if verbose >= 2. Defaults to 0.
-        cost_scale (int, optional): divide the cost matrix by cost_scale before calculating, scale back in the end. Defaults to 1.
-        iter_gap (int, optional): print results every `iter_gap` iterations. Defaults to 100.
+        costs (array): Cost matrix for the optimal transport problem.
+        target_mu (list): Target probability distributions.
+        epsilon (float): Starting epsilon for the Sinkhorn iterations. Defaults to 1e-2.
+        target_epsilon (float): Target end epsilon for the Sinkhorn iterations. Defaults to 1e-4.
+        verbose (int): Verbosity level. Print intermediate results if verbose >= 2. Defaults to 0.
+        epsilon_scale_num (float): Factor to scale epsilon after `epsilon_scale_gap` iterations. Defaults to 0.99.
+        epsilon_scale_gap (int): Number of iterations after which to scale epsilon. Defaults to 100.
+        cost_scale (int, optional): Scale factor for the cost matrix. Divide the cost matrix by `cost_scale` before calculating, then scale back at the end. Defaults to 1.
+        iter_gap (int, optional): Print results every `iter_gap` iterations if verbose >= 2. Defaults to 100.
+        max_iter (int, optional): Maximum number of iterations to run. Defaults to 5000.
+        out_dir (str, optional): Directory to save the log files. Defaults to 'test'.
 
     Returns:
-        _type_: _description_
+        tuple: A tuple containing the following elements:
+            - float: Final objective value.
+            - float: Lower bound of the objective.
+            - array: Weights of the optimal transport plan.
+
+    References:
+        Lin, Tianyi et al. (2022). “On the complexity of approximating multimarginal optimal transport”. In: The Journal of Machine Learning Research 23.1, pp. 2835–2877.
     """
     ########## initialization ###########
     
@@ -390,7 +412,31 @@ def solve_rrsinkhorn(costs, target_mu, epsilon=1e-2, target_epsilon=1e-4, verbos
 def Rho(a, b):
     return b - a + a * np.log(a / b)
 
-def solve_greenkhorn(costs, target_mu, epsilon=1e-2, target_epsilon=1e-4, verbose = 0, epsilon_scale_num = 0.99, epsilon_scale_gap = 100, cost_scale = 1, iter_gap = 100, max_iter = 5000, out_dir = 'test'):
+def solve_multi_greenkhorn(costs, target_mu, epsilon=1e-2, target_epsilon=1e-4, verbose = 0, epsilon_scale_num = 0.99, epsilon_scale_gap = 100, cost_scale = 1, iter_gap = 100, max_iter = 5000, out_dir = 'test'):
+    """Solve using the Greenkhorn algorithm
+
+    Args:
+        costs (array): Cost matrix for the optimal transport problem.
+        target_mu (list): Target probability distributions.
+        epsilon (float): Starting epsilon for the Greenkhorn iterations. Defaults to 1e-2.
+        target_epsilon (float): Target end epsilon for the Greenkhorn iterations. Defaults to 1e-4.
+        verbose (int): Verbosity level. Print intermediate results if verbose >= 2. Defaults to 0.
+        epsilon_scale_num (float): Factor to scale epsilon after `epsilon_scale_gap` iterations. Defaults to 0.99.
+        epsilon_scale_gap (int): Number of iterations after which to scale epsilon. Defaults to 100.
+        cost_scale (int, optional): Scale factor for the cost matrix. Divide the cost matrix by `cost_scale` before calculating, then scale back at the end. Defaults to 1.
+        iter_gap (int, optional): Print results every `iter_gap` iterations if verbose >= 2. Defaults to 100.
+        max_iter (int, optional): Maximum number of iterations to run. Defaults to 5000.
+        out_dir (str, optional): Directory to save the log files. Defaults to 'test'.
+
+    Returns:
+        tuple: A tuple containing the following elements:
+            - float: Final objective value.
+            - float: Lower bound of the objective.
+            - array: Weights of the optimal transport plan.
+
+    References:
+        Altschuler, Jason, Jonathan Weed, and Philippe Rigollet (2018). “Near-linear time approximation algorithms for optimal transport via Sinkhorn iteration.” arXiv: 1705.09634 [cs.DS].
+    """
     costs /= cost_scale
     shape = costs.shape
     M = len(shape)
@@ -494,7 +540,31 @@ def solve_greenkhorn(costs, target_mu, epsilon=1e-2, target_epsilon=1e-4, verbos
     lb = sum([sum(get_marginal_k(target_mu, k, shape) * m[k]) for k in range(M)]) * cost_scale / eta
     return np.sum(weights * costs) * cost_scale, lb, weights
 
-def solve_aam(costs, target_mu, epsilon_final = 1e-6, verbose = 0, print_itr = 0, max_iterate = 50, method = "binary_search", cost_scale = 1, epsilon0 = 0.01, halflife = 1, out_dir = 'test'):
+def solve_pd_aam(costs, target_mu, epsilon_final = 1e-6, verbose = 0, print_itr = 0, max_iterate = 50, method = "binary_search", cost_scale = 1, epsilon0 = 0.01, halflife = 1, out_dir = 'test'):
+    """Solve using the Accelerated Alternating Minimization (AAM) algorithm
+
+    Args:
+        costs (array): Cost matrix for the optimal transport problem.
+        target_mu (list): Target probability distributions.
+        epsilon_final (float): Final epsilon value for stopping criterion. Defaults to 1e-6.
+        verbose (int): Verbosity level. Print intermediate results if verbose >= 2. Defaults to 0.
+        print_itr (int): Iteration interval for printing intermediate results if verbose >= 2. Defaults to 0.
+        max_iterate (int): Maximum number of iterations. Defaults to 50.
+        method (str): Method for finding the minimum of the dual objective function ('binary_search', 'minimize', 'fix', or 'minimize_scalar'). Defaults to "binary_search".
+        cost_scale (int, optional): Scale factor for the cost matrix. Divide the cost matrix by `cost_scale` before calculating, then scale back at the end. Defaults to 1.
+        epsilon0 (float): Initial epsilon value for the iterations. Defaults to 0.01.
+        halflife (float): Halflife parameter for epsilon decay. Defaults to 1.
+        out_dir (str, optional): Directory to save the log files. Defaults to 'test'.
+
+    Returns:
+        tuple: A tuple containing the following elements:
+            - float: Final objective value.
+            - float: Lower bound of the objective.
+            - array: Weights of the optimal transport plan.
+
+    References:
+        Tupitsa, Nazarii et al. (2020). “Multimarginal optimal transport by accelerated alternating minimization”. In: 2020 59th IEEE Conference on Decision and Control (CDC). IEEE, pp. 6132–6137.
+    """
     costs /= cost_scale
     shape = costs.shape
     m, n = len(shape), max(shape) # (n = (5, 5, 8, 12))
@@ -660,7 +730,7 @@ def solve_aam(costs, target_mu, epsilon_final = 1e-6, verbose = 0, print_itr = 0
     return obj, lb_obj, X
 
 
-def get_res_single(tmp_list, solver = solve_sinkhorn, return_res = False, print_res = True, cost_type='square'):
+def get_res_single(tmp_list, solver = solve_multi_sinkhorn, return_res = False, print_res = True, cost_type='square'):
     if cost_type == 'cov':
         cost_fn = create_cov_cost_tensor
     elif cost_type == 'normed_square':
@@ -689,14 +759,14 @@ if __name__ == "__main__":
     
     if args.solver == 'aam':
         dis, lb, weight = get_res_single(tmp_list, 
-                                 solver = lambda a, b: solve_aam(a, b, epsilon_final = args.target_epsilon, verbose = 2, max_iterate=args.max_iter, method = "binary_search", cost_scale = 1, halflife = 0.004, epsilon0=args.start_epsilon, out_dir = out_dir), return_res = True, cost_type = args.cost_type)
+                                 solver = lambda a, b: solve_pd_aam(a, b, epsilon_final = args.target_epsilon, verbose = 2, max_iterate=args.max_iter, method = "binary_search", cost_scale = 1, halflife = 0.004, epsilon0=args.start_epsilon, out_dir = out_dir), return_res = True, cost_type = args.cost_type)
     else:
         if args.solver == "sinkhorn":
-            solver_fn = solve_sinkhorn
+            solver_fn = solve_multi_sinkhorn
         elif args.solver == "rrsinkhorn":
             solver_fn = solve_rrsinkhorn
         elif args.solver == "greenkhorn":
-            solver_fn = solve_greenkhorn
+            solver_fn = solve_multi_greenkhorn
         else:
             raise ValueError("Solver not found")
         dis, lb, weight = get_res_single(tmp_list, 
