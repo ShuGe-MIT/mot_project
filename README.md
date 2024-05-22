@@ -1,11 +1,29 @@
-# MOT Solver Training Script
+# MOT Solver
 
-This README provides detailed instructions on how to use the `MOT_models.py` script to train models using the Monge-Ampere Optimal Transport solver. This script is designed to adjust transport plans based on user-defined cost functions and convergence criteria.
+This repository contains code implementation for several Multi-Marginal Optimal Transport in the literature. It has 4 implementations from:
+- MOT Sinkhorn (Lin, Tianyi et al. ([2022](https://arxiv.org/abs/1910.00152))
+- MOT Sinkhorn updated with round-robin fashion
+- MOT Greenkhorn (Altschuler, Jason, Jonathan Weed, and Philippe Rigollet ([2018](https://arxiv.org/abs/1705.09634))
+- MOT Accelerated Alternating Minimization (Tupitsa, Nazarii et al. ([2020](https://arxiv.org/abs/2004.02294))
+
+It also contains results of running MOT using Multi-Marginal Sinkhorn on several empirical datasets.
 
 ## Prerequisites
 
 To run this script, you will need:
 - Python 3.x
+
+## Reproduce generated results
+```bash
+pip install argparse numpy scipy matplotlib torch torchvision torchaudio
+
+python data_generation_script.py
+
+chmod +x train_script.sh
+./train_script.sh
+```
+
+Use `view_results.ipynb` to view any results from `/log`.
 
 ## Installation
 
@@ -42,15 +60,3 @@ python MOT_models.py --start_epsilon=1 --target_epsilon=1e-3 --iter_gap=1 --epsi
 This command sets the training parameters according to the user's specific needs, such as cost type and epsilon values.
 
 During training, the results are logged inside the `/log` folder.
-
-## Reproduce generated results
-```bash
-pip install argparse numpy scipy matplotlib torch torchvision torchaudio
-
-python data_generation_script.py
-
-chmod +x train_script.sh
-./train_script.sh
-```
-
-Use `view_results.ipynb` to view any results from `/log`.
