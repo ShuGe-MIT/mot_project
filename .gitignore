@@ -2,4 +2,4 @@ data/generated_data/*
 out/
 myScript.sh.*
 submit_script*.sh
-log/*
+log/generated_log/*
