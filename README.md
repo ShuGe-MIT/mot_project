@@ -1,6 +1,6 @@
-# MOT Solver Training Script
+# MOT Solver
 
-This README provides detailed instructions on how to use the `MOT_models.py` script to train models using the Monge-Ampere Optimal Transport solver. This script is designed to adjust transport plans based on user-defined cost functions and convergence criteria.
+This repository contains code implementation for Multi-Marginal Optimal Transport
 
 ## Prerequisites
 
