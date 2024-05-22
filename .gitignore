@@ -1,4 +1,4 @@
-data/*.pkl
+data/generated_data/*
 out/
 myScript.sh.*
 submit_script*.sh
