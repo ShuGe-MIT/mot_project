@@ -17,7 +17,7 @@ pip install argparse numpy scipy matplotlib torch torchvision torchaudio
 ```
 
 ## Data Generation
-Use `data_generation.ipynb` to generate the MOT input from raw data stored in `/data`.
+Run `python data_generation_script.py` to generate all the inputs from raw data, stored in `data`.
 
 ## MOT Training
 The script `MOT_models.py` can be executed from the command line with several options that allow you to customize the training process. Below is a list of the available command-line arguments:
@@ -43,5 +43,14 @@ This command sets the training parameters according to the user's specific needs
 
 During training, the results are logged inside the `/log` folder.
 
-## Visualization
+## Reproduce generated results
+```bash
+pip install argparse numpy scipy matplotlib torch torchvision torchaudio
+
+python data_generation_script.py
+
+chmod +x train_script.sh
+./train_script.sh
+```
+
 Use `view_results.ipynb` to view any results from `/log`.

@@ -1,5 +1,6 @@
 import numpy as np
 from functools import reduce
+from itertools import product
 from math import log, sqrt
 import matplotlib.pyplot as plt
 from scipy.optimize import linprog
@@ -38,7 +39,7 @@ def tensor_sum(list_of_lists):
         tensor += torch.from_numpy(l).reshape(*([1]*idx + [-1] + [1]*(M - idx - 1))).expand(*shape).numpy()
     return tensor
 
-def binary_search(a, b, f, delta = 1e-2):
+def binary_search(a, b, f, delta = 1e-3):
     while True:
         c = (a+b)/2
         if f(c+delta) < f(c):
@@ -48,6 +49,13 @@ def binary_search(a, b, f, delta = 1e-2):
         if abs(a-b) <= delta:
             break
     return (a+b)/2
+
+def larger_root_qr(a, b, c):
+    delta = (b**2) - (4 * a*c)
+    assert delta >= 0
+    ans1 = (-b - sqrt(delta))/(2 * a)
+    ans2 = (-b + sqrt(delta))/(2 * a)
+    return max(ans1, ans2)
 
 def create_normed_cost_tensor(list_list_of_lists):
     shape = tuple(len(lst) for lst in list_list_of_lists[0])
@@ -96,6 +104,7 @@ def projection(X, p):
         V *= np.transpose(np.tensordot(X_r, np.ones(shape[r+1:] + shape[:r]), axes=0), axes = rotate(idxes, -r))
 
     err_list = [get_marginal_k(p, r, shape) - marginal_k(V, r) for r in range(m)]
+    # V += reduce(np.multiply, np.ix_(*err_list)) / (np.abs(err_list[-1]).sum() ** (m-1))
     V += reduce(np.multiply, np.ix_(*err_list)) / (np.abs(err_list[-1]).sum() ** (m-1))
     return V
 
@@ -200,11 +209,8 @@ def solve_sinkhorn(costs, target_mu, epsilon=1e-2, target_epsilon=1e-4, verbose 
         obj_list.append(obj)
         lb_list.append(lb)
         
-        if verbose >= 100: 
-            print("tensor_sum max", tensor_sum(m).max(), tensor_sum(m).min())
         if ((tensor_sum(m) - eta * costs) > 0).any().any():
             raise Exception("tensor_sum(m) can't be greater than eta * costs")
-            # print("tensor_sum(m) - eta * costs", tensor_sum(m) - eta * costs)
 
         if iter % iter_gap == 0:
             memo = {"m": m, "obj_list":obj_list, "lb_list": lb_list, 
@@ -234,7 +240,7 @@ def solve_sinkhorn(costs, target_mu, epsilon=1e-2, target_epsilon=1e-4, verbose 
                 if abs(obj) < 2 * target_epsilon:
                     raise Exception("obj too small. smaller than target 2 * eps: ", 2 * target_epsilon)
                 elif  iter >= max_iter:
-                    raise Exception("exceed %d iterations" % max_iter)
+                    break
                 else:
                     scale_factor = max(target_epsilon / epsilon, epsilon_scale_num)
                     epsilon *= scale_factor
@@ -243,7 +249,7 @@ def solve_sinkhorn(costs, target_mu, epsilon=1e-2, target_epsilon=1e-4, verbose 
                     m = [l / scale_factor for l in m]
         else:
             if iter >= max_iter:
-                raise Exception("exceed %d iterations" % max_iter)
+                break
             elif iter % epsilon_scale_gap == 0:
                 scale_factor = max(target_epsilon / epsilon, epsilon_scale_num)
                 epsilon *= scale_factor
@@ -278,7 +284,6 @@ def solve_rrsinkhorn(costs, target_mu, epsilon=1e-2, target_epsilon=1e-4, verbos
     costs /= cost_scale
     shape = costs.shape
     M = len(shape)
-    # print("shape: ", shape)
     eta = 4 * sum([log (n) for n in shape]) / epsilon
     epsilon_prime = epsilon / 8 / costs.max()
     min_cost = costs.min()
@@ -327,11 +332,8 @@ def solve_rrsinkhorn(costs, target_mu, epsilon=1e-2, target_epsilon=1e-4, verbos
         obj_list.append(obj)
         lb_list.append(lb)
         
-        if verbose >= 100: 
-            print("tensor_sum max", tensor_sum(m).max(), tensor_sum(m).min())
         if ((tensor_sum(m) - eta * costs) > 0).any().any():
             raise Exception("tensor_sum(m) can't be greater than eta * costs")
-            # print("tensor_sum(m) - eta * costs", tensor_sum(m) - eta * costs)
 
         if iter % iter_gap == 0:
             memo = {"m": m, "obj_list":obj_list, "lb_list": lb_list, 
@@ -361,7 +363,7 @@ def solve_rrsinkhorn(costs, target_mu, epsilon=1e-2, target_epsilon=1e-4, verbos
                 if abs(obj) < 2 * target_epsilon:
                     raise Exception("obj too small. smaller than target 2 * eps: ", 2 * target_epsilon)
                 elif  iter >= max_iter:
-                    raise Exception("exceed %d iterations" % max_iter)
+                    break
                 else:
                     scale_factor = max(target_epsilon / epsilon, epsilon_scale_num)
                     epsilon *= scale_factor
@@ -370,7 +372,7 @@ def solve_rrsinkhorn(costs, target_mu, epsilon=1e-2, target_epsilon=1e-4, verbos
                     m = [l / scale_factor for l in m]
         else:
             if iter >= max_iter:
-                raise Exception("exceed %d iterations" % max_iter)
+                break
             elif iter % epsilon_scale_gap == 0:
                 scale_factor = max(target_epsilon / epsilon, epsilon_scale_num)
                 epsilon *= scale_factor
@@ -391,7 +393,8 @@ def Rho(a, b):
 def solve_greenkhorn(costs, target_mu, epsilon=1e-2, target_epsilon=1e-4, verbose = 0, epsilon_scale_num = 0.99, epsilon_scale_gap = 100, cost_scale = 1, iter_gap = 100, max_iter = 5000, out_dir = 'test'):
     costs /= cost_scale
     shape = costs.shape
-    epsilon = start_epsilon
+    M = len(shape)
+    epsilon = args.start_epsilon
     eta = 4 * sum([log(n) for n in shape]) / epsilon
     epsilon_prime = epsilon / 8 / costs.max()
     min_cost = costs.min()
@@ -467,7 +470,7 @@ def solve_greenkhorn(costs, target_mu, epsilon=1e-2, target_epsilon=1e-4, verbos
                 if abs(obj) < 2 * target_epsilon:
                     raise Exception("obj too small. smaller than target 2 * eps: ", 2 * target_epsilon)
                 elif  iter >= max_iter:
-                    raise Exception("exceed %d iterations" % max_iter)
+                    break
                 else:
                     scale_factor = max(target_epsilon / epsilon, epsilon_scale_num)
                     epsilon *= scale_factor
@@ -476,7 +479,7 @@ def solve_greenkhorn(costs, target_mu, epsilon=1e-2, target_epsilon=1e-4, verbos
                     m = [l / scale_factor for l in m]
         else:
             if iter >= max_iter:
-                raise Exception("exceed %d iterations" % max_iter)
+                break
             elif iter % epsilon_scale_gap == 0:
                 scale_factor = max(target_epsilon / epsilon, epsilon_scale_num)
                 epsilon *= scale_factor
@@ -491,93 +494,54 @@ def solve_greenkhorn(costs, target_mu, epsilon=1e-2, target_epsilon=1e-4, verbos
     lb = sum([sum(get_marginal_k(target_mu, k, shape) * m[k]) for k in range(M)]) * cost_scale / eta
     return np.sum(weights * costs) * cost_scale, lb, weights
 
-
-def solve_aam(costs, target_mu, epsilon = 1e-2, verbose = 0, print_itr = 0, max_iterate = 10, method = "binary_search"):
-    
-    print("start solving AAM", "Current Time:", datetime.datetime.now())
-    
+def solve_aam(costs, target_mu, epsilon_final = 1e-6, verbose = 0, print_itr = 0, max_iterate = 50, method = "binary_search", cost_scale = 1, epsilon0 = 0.01, halflife = 1, out_dir = 'test'):
+    costs /= cost_scale
     shape = costs.shape
     m, n = len(shape), max(shape) # (n = (5, 5, 8, 12))
-    MAX_DIGIT = 50
+    MAX_DIGIT = 25
     C_norm = costs.max().max()
-    gamma = epsilon / (2 * m * np.log(n))
-    epsilon_p = epsilon / (8 * C_norm)
+    
     p = np.array(target_mu)
     uniform = np.array([1/n for n in shape for _ in range(n)])
-    p_tilde = (1 - epsilon_p/(4 * m)) * np.array(target_mu) + epsilon_p / (4 * m) * uniform
-    # if verbose >= 2 and itr > print_itr: print("p", p, "p_tilde", p_tilde)
-    def marginal_k(X, k):
-        # marginalize tensor X over dimension k
-        return np.sum(X, axis=tuple(axis for axis in range(X.ndim) if axis != k))
-    def get_marginal_k(p, k):
-        return p[ravel_index(k, 0, shape): ravel_index(k, shape[k], shape)]
+    
     def l1_error(X, p):
         # compute l1 error of X from the target marginal
-        return np.sum(np.abs(marginal_k(X, k) - get_marginal_k(p, k)).sum() for k in range(X.ndim)) 
-    def F(X):
-        # if verbose >= 2 and itr > print_itr: print("F:", (X * np.log(X)).sum().sum())
+        return np.sum(np.abs(marginal_k(X, k) - get_marginal_k(p, k, shape)).sum() for k in range(X.ndim)) 
+    def F(X, gamma):
         return (costs * X).sum().sum() - gamma * (X * np.log(X)).sum().sum()
-    def B(U):
-        U_tmp = np.zeros(costs.shape)
-        for idx in product(*map(range, costs.shape)):
-            U_tmp[idx] = np.exp(sum(U[ravel_index(k, i, shape)] for k, i in enumerate(idx)) - costs[idx] / gamma)
-        return U_tmp
-    def log_B(U):
-        U_tmp = np.zeros(costs.shape)
-        for idx in product(*map(range, costs.shape)):
-            U_tmp[idx] = sum(U[ravel_index(k, i, shape)] for k, i in enumerate(idx)) - costs[idx] / gamma
+    def B_stable(U, gamma):
+        # convert U to a list of lists with list length equal to shape
+        U_list = convert_to_list(U, shape)
+        U_sum = tensor_sum(U_list)
+        U_tmp = U_sum - costs / gamma
         max_U_tmp = U_tmp.max().max()
-        U_tmp = U_tmp * (U_tmp >= max_U_tmp - MAX_DIGIT)
+        U_tmp = np.maximum(U_tmp, max_U_tmp - MAX_DIGIT)
         min_U_tmp = U_tmp.min().min()
-        return min_U_tmp + np.log(np.exp(U_tmp - min_U_tmp).sum().sum())
-    def B_1(U):
-        U_tmp = np.zeros(costs.shape)
-        for idx in product(*map(range, costs.shape)):
-            U_tmp[idx] = np.exp(sum(U[ravel_index(k, i, shape)] for k, i in enumerate(idx)) - costs[idx] / gamma + 1)
-            if U_tmp[idx] == 0:
-                if verbose >= 2 and itr > print_itr: print("U_tmp[idx] == 0", U_tmp[idx], sum(U[ravel_index(k, i, shape)] for k, i in enumerate(idx)), - costs[idx] / gamma + 1)
-        return U_tmp
-    def psi(U, p):
-        return gamma * (log_B(U) - U @ p)
-    def primal(U):
-        L_tmp = B_1(U)
-        L_norm = L_tmp.sum().sum()
-        return L_tmp / L_norm
-    def g(theta, p):
-        U_tmp = B(theta)
-        return np.concatenate([marginal_k(U_tmp, k) / U_tmp.sum().sum() - get_marginal_k(p, k) for k in range(m)])
-    def g_l2_norm(theta, p):
-        U_tmp = B(theta)
-        return np.sum([np.square(marginal_k(U_tmp, k) / U_tmp.sum().sum() - get_marginal_k(p, k)).sum() for k in range(m)])
-    def g_l2_norm_k(k, theta, p):
-        U_tmp = B(theta)
-        return np.square(marginal_k(U_tmp, k) / U_tmp.sum().sum() - get_marginal_k(p, k)).sum()
-    def update_eta(theta, i): # lemma 2 iteration step
-        U_tmp = B(theta)
+        return np.exp(U_tmp - min_U_tmp), min_U_tmp
+    def log_B(U, gamma):
+        exp_U_tmp, min_U_tmp = B_stable(U, gamma)
+        return min_U_tmp + np.log(exp_U_tmp.sum().sum())
+    def psi(U, p, gamma):
+        return gamma * (log_B(U, gamma) - U @ p)
+    def primal(U, gamma):
+        exp_U_tmp, _ = B_stable(U, gamma)
+        return exp_U_tmp / exp_U_tmp.sum().sum()
+    def g_k(k, U, p, gamma):
+        exp_U_tmp, _ = B_stable(U, gamma)
+        return marginal_k(exp_U_tmp, k) / exp_U_tmp.sum().sum() - get_marginal_k(p, k, shape)
+    def g(theta, p, gamma):
+        return np.concatenate([g_k(k, theta, p, gamma) for k in range(m)])
+    def g_l2_norm(theta, p, gamma):
+        return np.sum([g_l2_norm_k(k, theta, p, gamma) for k in range(m)])
+    def g_l2_norm_k(k, theta, p, gamma):
+        return np.square(g_k(k, theta, p, gamma)).sum() # marginal_k(U_tmp, k)
+    def update_eta(theta, i, gamma): # lemma 2 iteration step
         eta = theta.copy()
-        eta_update = get_marginal_k(theta, i) + np.log(get_marginal_k(p, i)) - np.log(marginal_k(U_tmp, i))
+        exp_U_tmp, min_U_tmp = B_stable(eta, gamma)
+        log_B_marginal = min_U_tmp + np.log(np.sum(exp_U_tmp, axis=tuple(axis for axis in range(exp_U_tmp.ndim) if axis != i)))
+        eta_update = get_marginal_k(theta, i, shape) + np.log(get_marginal_k(p, i, shape)) - log_B_marginal
         eta[ravel_index(i, 0, shape): ravel_index(i, shape[i], shape)] = eta_update
         return eta
-    def larger_root_qr(a, b, c):
-        # calculating  the discriminant
-        delta = (b**2) - (4 * a*c)
-        # find two results
-        assert delta >= 0
-        ans1 = (-b - sqrt(delta))/(2 * a)
-        ans2 = (-b + sqrt(delta))/(2 * a)
-        return max(ans1, ans2)
-    def projection(X, p):
-        V = X.copy()
-        for r in range(m-1):
-            X_r = np.minimum(get_marginal_k(p, r) / marginal_k(V, r), 1)
-            for idx in product(*map(range, shape)):
-                V[idx] = V[idx] * X_r[idx[r]] # TODO: optimize this
-        err_list = []
-        for r in range(m):
-            err_list.append(get_marginal_k(p, r) - marginal_k(V, r))
-        # outer product of err_list
-        V += reduce(np.multiply, np.ix_(*err_list)) / (np.abs(err_list[-1]).sum() ** (m-1))
-        return V
     
     A = 0
     a = 0
@@ -586,24 +550,36 @@ def solve_aam(costs, target_mu, epsilon = 1e-2, verbose = 0, print_itr = 0, max_
     theta = np.zeros(len(p))
     x0 = 0.1
 
+    # TODO: what's the initialization for X?
     X = np.ones(costs.shape)
 
     obj_list = []
+    dual_obj_list = []
     condition_list = []
+    lb_obj_list = []
+    max_lb_obj_list = []
     beta_list = []
     itr = 0
     
-    while 2 * l1_error(X, p_tilde) + F(X) + psi(eta, p) > epsilon / 2:
+    
+    epsilon = (epsilon0 - epsilon_final) * np.exp(-itr * halflife) + epsilon_final
+    gamma = epsilon / (2 * m * np.log(n))
+    epsilon_p = epsilon / (8 * C_norm)
+    p_tilde = (1 - epsilon_p/(4 * m)) * np.array(target_mu) + epsilon_p / (4 * m) * uniform
+    
+    while 2 * l1_error(X, p_tilde) + F(X, gamma) + psi(eta, p_tilde, gamma) > epsilon / 2:
+        if verbose >= 2 and itr % 100 == 0: print("="* 30, "itr", itr, "epsilon", epsilon, "gamma", gamma)
         itr += 1
         if itr > max_iterate:
-            if verbose >= 2 and itr > print_itr: print("exit %d iterations " % (max_iterate) + "!" * 80, 2 * l1_error(X, p_tilde) + F(X) + psi(eta, p), epsilon / 2)
+            if verbose >= 2 and itr >= print_itr: print("exit %d iterations " % (max_iterate) + "!" * 80, 2 * l1_error(X, p_tilde) + F(X, gamma) + psi(eta, p_tilde, gamma), epsilon / 2)
             break
     
         # apply PD-AAM to the dual problem
         def f(beta):
-            return psi(eta + beta * (zeta - eta), p_tilde)
+            return psi(eta + beta * (zeta - eta), p_tilde, gamma)
         # find the minimum of f(beta)
         # add constraints that beta is in [0, 1]
+        
         if method == "minimize":
             # method 1
             const = ({'type': 'ineq', 'fun': lambda beta: beta}, {'type': 'ineq', 'fun': lambda beta: 1 - beta})
@@ -611,39 +587,78 @@ def solve_aam(costs, target_mu, epsilon = 1e-2, verbose = 0, print_itr = 0, max_
         elif method == "binary_search":
             # method 2
             beta = binary_search(0, 1, f)
+        elif method == "fix":
+            beta = 0.1
         else:
             # method 3
             beta = optimize.minimize_scalar(f, bounds=(0, 1), method = 'bounded').x
         
-        
         beta_list.append(beta)
         theta = eta + beta * (zeta - eta)
-        if verbose >= 2 and itr > print_itr: print("beta, eta, zeta", beta, eta, zeta)
+        if verbose >= 100 and itr >= print_itr: print("beta, eta, zeta, theta", beta, eta, zeta, theta)
 
         # pick margin
-        i = np.argmax([g_l2_norm_k(k, theta, p_tilde) for k in range(m)])
+        i = np.argmax([g_l2_norm_k(k, theta, p_tilde, gamma) for k in range(m)])
         
-        eta = update_eta(theta, i)
+        eta = update_eta(theta, i, gamma)
         
-        tmp = (psi(theta, p_tilde) - psi(eta, p_tilde)) / g_l2_norm(theta, p_tilde)
-        if tmp < 0: 
-            if verbose >= 2 and itr > print_itr: print("early stopping " + "!" * 80, tmp)
+        if verbose >= 100 and itr >= print_itr: print("theta, eta", theta, eta)
+        diff = (psi(theta, p_tilde, gamma) - psi(eta, p_tilde, gamma))
+        
+        # TODO: hacky way to avoid unsolvable a
+        if diff < 0: 
+            if verbose >= 2 and itr >= print_itr: print("early stopping " + "!" * 80, tmp)
             a = 0
             # break
-        else: a = larger_root_qr(1, - 2 * tmp, - 2 * tmp * A)
+        else:
+            tmp = diff / g_l2_norm(theta, p_tilde, gamma) 
+            a = larger_root_qr(1, - 2 * tmp, - 2 * tmp * A)
         A_t = A
         A += a
-        zeta = zeta - a * g(theta, p_tilde)
+        zeta = zeta - a * g(theta, p_tilde, gamma)
         
-        X = (a * primal(theta) + A_t * X) / A
+        dual_obj= - psi(theta, p, gamma) * cost_scale
         
-        obj = (costs * X).sum().sum()
+        lb_obj = dual_obj - epsilon * np.log(np.prod(shape))
         
+        X = (a * primal(theta, gamma) + A_t * X) / A
+        
+        X = projection(X, p) # TODO: project X to the probability simplex (not in the original code)
+        obj = (costs * X).sum().sum() * cost_scale
+        gap = 2 * l1_error(X, p_tilde) + F(X, gamma) + psi(eta, p, gamma)
+        
+        
+        
+        condition_list.append(gap)
         obj_list.append(obj)
-        condition_list.append(2 * l1_error(X, p_tilde) + F(X) + psi(eta, p))
-    weight = projection(X, p)
-    obj = (costs * weight).sum().sum()
-    return obj, -float('inf'), weight
+        lb_obj_list.append(lb_obj)
+        max_lb_obj_list.append(max(lb_obj_list))
+        dual_obj_list.append(dual_obj)
+        
+        if verbose >= 2 and itr >= print_itr and itr % 100 == 0: 
+            print("*", "obj: ", obj, "dual_obj", dual_obj, "lb_obj", lb_obj, "gap:", gap, "l1_error", l1_error(X, p_tilde), "F", F(X, gamma), "psi", psi(eta, p, gamma), "eps", epsilon / 2, "*")
+            memo = {"obj_list":obj_list, "lb_list": lb_obj_list, 
+                    "iter": iter, "obj": obj, "lb": lb_obj, 
+                    "eps": epsilon / 2, "eta": eta, 
+                    "cost_scale": cost_scale,
+                   "data_file": args.data_file, "start_epsilon": args.start_epsilon,
+                   "target_epsilon": args.target_epsilon, "error": None}
+            pkl.dump(memo, open( 'log/' + out_dir + '.pkl', 'wb'))
+        
+        epsilon = (epsilon0 - epsilon_final) * np.exp(-itr * halflife) + epsilon_final
+        gamma = epsilon / (2 * m * np.log(n))
+        epsilon_p = epsilon / (8 * C_norm)
+        p_tilde = (1 - epsilon_p/(4 * m)) * np.array(target_mu) + epsilon_p / (4 * m) * uniform
+    
+    print("*", "obj: ", obj, "dual_obj", dual_obj, "lb_obj", lb_obj, "max lb_obj", max_lb_obj_list[-1], "gap:", gap, "l1_error", l1_error(X, p_tilde), "F", F(X, gamma), "psi", psi(eta, p, gamma), "eps", epsilon / 2, "*")
+    lb_obj = dual_obj - epsilon * np.log(np.prod(shape))
+        
+    X = (a * primal(theta, gamma) + A_t * X) / A
+
+    X = projection(X, p) # TODO: project X to the probability simplex (not in the original code)
+    obj = (costs * X).sum().sum() * cost_scale
+    return obj, lb_obj, X
+
 
 def get_res_single(tmp_list, solver = solve_sinkhorn, return_res = False, print_res = True, cost_type='square'):
     if cost_type == 'cov':
@@ -673,8 +688,8 @@ if __name__ == "__main__":
     tic = time.perf_counter()
     
     if args.solver == 'aam':
-        lb, dis, weight = get_res_single(tmp_list, 
-                                 solver = solve_aam(a, b, epsilon = 0.01), return_res = True, cost_type = args.cost_type)
+        dis, lb, weight = get_res_single(tmp_list, 
+                                 solver = lambda a, b: solve_aam(a, b, epsilon_final = args.target_epsilon, verbose = 2, max_iterate=args.max_iter, method = "binary_search", cost_scale = 1, halflife = 0.004, epsilon0=args.start_epsilon, out_dir = out_dir), return_res = True, cost_type = args.cost_type)
     else:
         if args.solver == "sinkhorn":
             solver_fn = solve_sinkhorn
@@ -684,7 +699,7 @@ if __name__ == "__main__":
             solver_fn = solve_greenkhorn
         else:
             raise ValueError("Solver not found")
-        lb, dis, weight = get_res_single(tmp_list, 
+        dis, lb, weight = get_res_single(tmp_list, 
                                  solver = lambda a, b: solver_fn(a, b,
                                                                       epsilon=args.start_epsilon, 
                                                                       target_epsilon = args.target_epsilon, 
@@ -698,4 +713,4 @@ if __name__ == "__main__":
                                  return_res = True, cost_type = args.cost_type)
     
     toc = time.perf_counter()
-    print(f"single run: {toc - tic} seconds")
+    print(f"single run: {toc - tic} seconds with lb {lb}")
