@@ -69,3 +69,29 @@ with open('data/multidimHelpfulness.pkl', 'wb') as f:
                  [np.array(tmp1[0])/2, 
                   np.array(tmp1[1])/2, 
                   -np.array(tmp1[2])]], f)
+    
+from itertools import combinations
+file_name = 'educationCovarianceFull.csv'
+value_cols = ['GPA_year1', 'GPA_year2', 'grade_20059_fall', 'goodstanding_year1', 'goodstanding_year2']
+margin_col = ['sfp', 'ssp']
+
+for value_col, value_col1 in combinations(value_cols, 2):
+    data = pd.read_csv('data/' + file_name).dropna(subset=[value_col, value_col1]).drop(columns = ["Unnamed: 0"])
+    value = data.groupby(margin_col)[value_col].apply(list)
+    value1 = data.groupby(margin_col)[value_col1].apply(list)
+    tmp = value.values
+    tmp1 = value1.values
+    with open('data/multidimEducationCovariance-{}-{}.pkl'.format(value_col, value_col1), 'wb') as f:
+        pickle.dump([[np.array(tmp[0])/2, 
+                  np.array(tmp[1])/2, 
+                  -np.array(tmp[2])], 
+                 [np.array(tmp1[0])/2, 
+                  np.array(tmp1[1])/2, 
+                  -np.array(tmp1[2])]], f)
+    with open('data/multidimInvEducationCovariance-{}-{}.pkl'.format(value_col, value_col1), 'wb') as f:
+        pickle.dump([[np.array(tmp[0])/2, 
+                  np.array(tmp[1])/2, 
+                  -np.array(tmp[2])], 
+                 [-np.array(tmp1[0])/2, 
+                  -np.array(tmp1[1])/2, 
+                  np.array(tmp1[2])]], f)
