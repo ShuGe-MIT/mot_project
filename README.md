@@ -13,6 +13,18 @@ It also contains results of running MOT using Multi-Marginal Sinkhorn on several
 To run this script, you will need:
 - Python 3.x
 
+## Reproduce generated results
+```bash
+pip install argparse numpy scipy matplotlib torch torchvision torchaudio
+
+python data_generation_script.py
+
+chmod +x train_script.sh
+./train_script.sh
+```
+
+Use `view_results.ipynb` to view any results from `/log`.
+
 ## Installation
 
 Ensure that you have Python installed on your machine. You can download Python from [python.org](https://www.python.org/downloads/).
@@ -48,15 +60,3 @@ python MOT_models.py --start_epsilon=1 --target_epsilon=1e-3 --iter_gap=1 --epsi
 This command sets the training parameters according to the user's specific needs, such as cost type and epsilon values.
 
 During training, the results are logged inside the `/log` folder.
-
-## Reproduce generated results
-```bash
-pip install argparse numpy scipy matplotlib torch torchvision torchaudio
-
-python data_generation_script.py
-
-chmod +x train_script.sh
-./train_script.sh
-```
-
-Use `view_results.ipynb` to view any results from `/log`.
