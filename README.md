@@ -1,10 +1,10 @@
 # MOT Solver
 
 This repository contains code implementation for several Multi-Marginal Optimal Transport in the literature. It has 4 implementations from:
-- MOT Sinkhorn ([Lin, Tianyi et al. (2022)](https://www.jmlr.org/papers/volume23/21-1052/21-1052.pdf))
+- MOT Sinkhorn (Lin, Tianyi et al. [(2022)](https://arxiv.org/abs/1910.00152))
 - MOT Sinkhorn updated with round-robin fashion
-- MOT Greenkhorn ([Altschuler, Jason, Jonathan Weed, and Philippe Rigollet (2018)](https://arxiv.org/abs/1705.09634))
-- MOT Accelerated Alternating Minimization ([Tupitsa, Nazarii et al. (2020)](https://ieeexplore.ieee.org/document/9304388))
+- MOT Greenkhorn (Altschuler, Jason, Jonathan Weed, and Philippe Rigollet [(2018)](https://arxiv.org/abs/1705.09634))
+- MOT Accelerated Alternating Minimization (Tupitsa, Nazarii et al. [(2020)](https://arxiv.org/abs/2004.02294))
 
 It also contains results of running MOT using Multi-Marginal Sinkhorn on several empirical datasets.
 
