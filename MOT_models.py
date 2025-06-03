@@ -3,12 +3,12 @@ from functools import reduce
 from itertools import product
 from math import log, sqrt
 import matplotlib.pyplot as plt
-from scipy.optimize import linprog
 import pickle as pkl
 import time
 import argparse
 import torch
 
+EPS = 1e-10
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Run MOT Solver')
@@ -72,6 +72,75 @@ def create_cost_tensor(list_list_of_lists):
         res += tensor_sum(list_of_lists) ** 2
     return res.astype(np.float64), np.array([1/n for n in shape for _ in range(n)]).astype(np.float64)
 
+def count_bins(data, num_bins, lb, ub, enable=True):
+    # print(data, len(data))
+    if enable:
+        if ub <= lb:
+            raise ValueError("Upper bound must be greater than lower bound.")
+        
+        bin_width = (ub - lb) / num_bins
+        bin_counts = [0] * num_bins
+        bin_means = [lb + (i + 0.5) * bin_width for i in range(num_bins)]
+
+        for value in data:
+            if value < lb:
+                bin_counts[0] += 1
+            elif value >= ub:
+                bin_counts[-1] += 1
+            else:
+                index = int((value - lb) / bin_width)
+                bin_counts[index] += 1
+
+        total = sum(bin_counts)
+        if total > 0:
+            bin_percentages = [count / total for count in bin_counts]
+        else:
+            bin_percentages = [0] * num_bins
+    else:
+        bin_means = data
+        n = len(data)
+        bin_percentages = [1/n for _ in range(n)]
+
+    return bin_means, bin_percentages
+
+def create_bin_cost_tensor(list_list_of_lists, num_bins=2, lb=-2,ub=2):
+    new_list_list_of_lists = []
+    
+    for list_of_lists in list_list_of_lists:
+        new_list_of_lists = []
+        marginal_dist = []
+            
+        for list_ in list_of_lists:
+            new_list, margin = count_bins(list_, num_bins=num_bins, lb=lb, ub=ub, enable=True)
+            new_list_of_lists.append(np.array(new_list))
+            marginal_dist += margin
+        new_list_list_of_lists.append(new_list_of_lists)
+    return create_normed_cost_tensor(new_list_list_of_lists)[0], np.array(marginal_dist).astype(np.float64)
+
+def create_clip_cost_tensor(list_list_of_lists, lb=-4,ub=4):
+    list_list_of_lists = [[np.clip(arr, lb, ub) for arr in inner] for inner in list_list_of_lists]
+    return create_normed_cost_tensor(list_list_of_lists)
+    
+
+"""
+[np.array(tmp[0])/2, 
+                  np.array(tmp[1])/2, 
+                  -np.array(tmp[2])]
+C = (n1, n2, n3)
+C = (10, 10, 10)
+[1/10], [1/10], [1/10]
+(1/6*3, 5/6*7)
+[0.3, 0, 0.7, ], [1/10], [1/10]
+(1/3, 1/2, 2/3), ..., ...
+[[np.array(tmp[0])/2, 
+                  np.array(tmp[1])/2, 
+                  -np.array(tmp[2])], 
+                 [np.array(tmp1[0])/2, 
+                  np.array(tmp1[1])/2, 
+                  -np.array(tmp1[2])]]
+"""
+
+
 def create_cov_cost_tensor(list_list_of_lists):
     shape = tuple(len(lst) for lst in list_list_of_lists[0])
     res = np.ones(shape)
@@ -104,6 +173,7 @@ def projection(X, p):
         V *= np.transpose(np.tensordot(X_r, np.ones(shape[r+1:] + shape[:r]), axes=0), axes = rotate(idxes, -r))
 
     err_list = [get_marginal_k(p, r, shape) - marginal_k(V, r) for r in range(m)]
+    
     # V += reduce(np.multiply, np.ix_(*err_list)) / (np.abs(err_list[-1]).sum() ** (m-1))
     V += reduce(np.multiply, np.ix_(*err_list)) / (np.abs(err_list[-1]).sum() ** (m-1))
     return V
@@ -112,17 +182,17 @@ def rho(a, b):
     return np.exp(a) @ (a - b)
 
 
-def solve_lp(costs, target_mu):
-    shape = costs.shape
-    A = np.zeros((np.sum(shape), np.prod(shape)))
-    for j, s in enumerate(shape):
-        for i in range(s):
-            for idx in product(*map(range, shape)):
-                if idx[j] == i:
-                    A[ravel_index(j, i, shape), np.ravel_multi_index(idx, shape)] = 1
-    c = costs.flatten()
-    res = linprog(c, A_eq=A, b_eq=target_mu, bounds=[0, 1])
-    return res.fun, res.x.reshape(shape)
+# def solve_lp(costs, target_mu):
+#     shape = costs.shape
+#     A = np.zeros((np.sum(shape), np.prod(shape)))
+#     for j, s in enumerate(shape):
+#         for i in range(s):
+#             for idx in product(*map(range, shape)):
+#                 if idx[j] == i:
+#                     A[ravel_index(j, i, shape), np.ravel_multi_index(idx, shape)] = 1
+#     c = costs.flatten()
+#     res = linprog(c, A_eq=A, b_eq=target_mu, bounds=[0, 1])
+#     return res.fun, res.x.reshape(shape)
 
 def solve_multi_sinkhorn(costs, target_mu, epsilon=1e-2, target_epsilon=1e-4, verbose = 0, epsilon_scale_num = 0.99, epsilon_scale_gap = 100, cost_scale = 1, iter_gap = 100, max_iter = 5000, out_dir = 'test'):
     """solve using Sinkhorn's algorithm
@@ -184,7 +254,7 @@ def solve_multi_sinkhorn(costs, target_mu, epsilon=1e-2, target_epsilon=1e-4, ve
             idxes.remove(k)
             tmp_max = exponents.max(axis = tuple(idxes))
             tmp_tensor = torch.from_numpy(tmp_max).reshape(*([1]*k + [-1] + [1]*(M - k - 1))).expand(*shape).numpy()
-            target_marginal_list.append(np.log(get_marginal_k(target_mu, k, shape)))
+            target_marginal_list.append(np.log(get_marginal_k(target_mu, k, shape) + EPS))
             gamma_marginal_list.append(np.log(np.exp(exponents - tmp_tensor).sum(axis = tuple(idxes))) + tmp_max)
             rho_list.append(rho(target_marginal_list[k], gamma_marginal_list[k]))
         k_star = np.argmax(rho_list)
@@ -201,13 +271,14 @@ def solve_multi_sinkhorn(costs, target_mu, epsilon=1e-2, target_epsilon=1e-4, ve
             idxes.remove(1)
             tmp_max = exponents.max(axis = tuple(idxes))
             tmp_tensor = torch.from_numpy(tmp_max).reshape(*([1]*1 + [-1] + [1]*(M - 1 - 1))).expand(*shape).numpy()
-            m[1] += np.log(get_marginal_k(target_mu, 1, shape)) - np.log(np.exp(exponents - tmp_tensor).sum(axis = tuple(idxes))) - tmp_max
+            m[1] += np.log(get_marginal_k(target_mu, 1, shape)+EPS) - np.log(np.exp(exponents - tmp_tensor).sum(axis = tuple(idxes))+EPS) - tmp_max
         else:
             stable_update()
             
         B = np.exp(tensor_sum(m) - eta * costs)
         distance = dist(B)
         # primal objective
+        # print(projection(B, target_mu), B, target_mu)
         obj = np.sum(projection(B, target_mu) * costs) * cost_scale
         # lower bound
         lb = sum([sum(get_marginal_k(target_mu, k, shape) * m[k]) for k in range(M)]) * cost_scale / eta     
@@ -730,14 +801,21 @@ def solve_pd_aam(costs, target_mu, epsilon_final = 1e-6, verbose = 0, print_itr 
     return obj, lb_obj, X
 
 
-def get_res_single(tmp_list, solver = solve_multi_sinkhorn, return_res = False, print_res = True, cost_type='square'):
+def get_res_single(tmp_list, solver = solve_multi_sinkhorn, return_res = True, print_res = True, cost_type='square'):
     if cost_type == 'cov':
         cost_fn = create_cov_cost_tensor
     elif cost_type == 'normed_square':
         cost_fn = create_normed_cost_tensor
+    elif cost_type == 'binned':
+        cost_fn = create_bin_cost_tensor
+    elif cost_type == 'clipped':
+        cost_fn = create_clip_cost_tensor
     else:
         cost_fn = create_cost_tensor
     costs, target_mu = cost_fn(tmp_list)
+    print('costs:', costs.shape)
+    print('target mu:')
+    print(target_mu)
     lb = np.sum([np.mean([np.mean(t) for t in tmp])**2 for tmp in tmp_list])
     try:
         dis, dlb, weight = solver(costs, target_mu)
@@ -784,3 +862,4 @@ if __name__ == "__main__":
     
     toc = time.perf_counter()
     print(f"single run: {toc - tic} seconds with lb {lb}")
+    print('data written to', out_dir)

@@ -2,6 +2,17 @@ import numpy as np
 import pandas as pd
 import pickle
 
+
+np.random.seed(42)
+n_points_per_margin = 200
+std_devs = [2.0, 0.3, 0.1]
+num_margins = len(std_devs)
+data = []
+for i, sigma in enumerate(std_devs):
+    data.append(np.random.normal(loc=0.0, scale=sigma, size=n_points_per_margin))
+with open('data/experiment.pkl', 'wb') as f:
+    pickle.dump([data], f)
+
 file_name = 'Original Epitaxial Layer Growth long V2.csv'
 value_col = 'value' # change this to the column name of the value for the first dimension
 margin_col = ['V1', 'V2'] # change this to the list of columns to be used as margins
@@ -48,6 +59,11 @@ with open('data/multidimInvEducationCovariance.pkl', 'wb') as f:
                  [-np.array(tmp1[0])/2, 
                   -np.array(tmp1[1])/2, 
                   np.array(tmp1[2])]], f)
+    
+with open('data/educationCovariance.pkl', 'wb') as f:
+    pickle.dump([[np.array(tmp[0])/2, 
+                  np.array(tmp[1])/2, 
+                  -np.array(tmp[2])]], f)
 
 # import csv file
 file_name = 'sample-covariate-simulate.csv' # change this to the name of the file
@@ -69,6 +85,11 @@ with open('data/multidimHelpfulness.pkl', 'wb') as f:
                  [np.array(tmp1[0])/2, 
                   np.array(tmp1[1])/2, 
                   -np.array(tmp1[2])]], f)
+    
+with open('data/helpfulness.pkl', 'wb') as f:
+    pickle.dump([[np.array(tmp[0])/2, 
+                  np.array(tmp[1])/2, 
+                  -np.array(tmp[2])]], f)
     
 from itertools import combinations
 file_name = 'educationCovarianceFull.csv'
